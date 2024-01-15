@@ -12,4 +12,14 @@ function fetchApi() {
   return Promise.resolve(apiList);
 }
 
-module.exports = { fetchTopics, fetchApi };
+function fetchArticleById(articleIndex) {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [articleIndex])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      } else return result.rows[0];
+    });
+}
+
+module.exports = { fetchTopics, fetchApi, fetchArticleById };

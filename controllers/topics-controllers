@@ -1,4 +1,8 @@
-const { fetchTopics, fetchApi } = require("../models/topics-models");
+const {
+  fetchTopics,
+  fetchApi,
+  fetchArticleById,
+} = require("../models/topics-models");
 
 function getTopics(req, res) {
   fetchTopics().then((topics) => {
@@ -16,4 +20,15 @@ function getApi(req, res, next) {
   });
 }
 
-module.exports = { getTopics, getError, getApi };
+function getArticlesById(req, res, next) {
+  const articleIndex = req.params.articles_id;
+  fetchArticleById(articleIndex)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
+module.exports = { getTopics, getError, getApi, getArticlesById };
