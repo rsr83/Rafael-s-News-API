@@ -1,0 +1,13 @@
+const { fetchTopics } = require("../models/topics-models");
+
+function getTopics(req, res) {
+  fetchTopics().then((topics) => {
+    return res.status(200).send({ topics });
+  });
+}
+
+function getError(req, res, next) {
+  next({ status: 404, msg: "Invalid Request" });
+}
+
+module.exports = { getTopics, getError };
