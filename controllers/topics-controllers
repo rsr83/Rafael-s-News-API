@@ -1,4 +1,4 @@
-const { fetchTopics } = require("../models/topics-models");
+const { fetchTopics, fetchApi } = require("../models/topics-models");
 
 function getTopics(req, res) {
   fetchTopics().then((topics) => {
@@ -10,4 +10,10 @@ function getError(req, res, next) {
   next({ status: 404, msg: "Invalid Request" });
 }
 
-module.exports = { getTopics, getError };
+function getApi(req, res, next) {
+  fetchApi().then((api) => {
+    return res.status(200).send({ api });
+  });
+}
+
+module.exports = { getTopics, getError, getApi };

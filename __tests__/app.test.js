@@ -35,3 +35,17 @@ describe("/api/topics", () => {
       });
   });
 });
+
+describe("/api", () => {
+  test("GET 200: receive a description of all other endpoints available", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(Object.keys(response.body.api)).toEqual([
+          "GET /api",
+          "GET /api/topics",
+        ]);
+      });
+  });
+});

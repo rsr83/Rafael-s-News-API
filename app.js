@@ -1,9 +1,14 @@
 const express = require("express");
-const { getTopics } = require("./controllers/topics-controllers");
-const { getError } = require("./controllers/topics-controllers");
+const {
+  getTopics,
+  getError,
+  getApi,
+} = require("./controllers/topics-controllers");
 const app = express();
 
 app.get("/api/topics", getTopics);
+
+app.get("/api", getApi);
 
 app.all("*", getError);
 
