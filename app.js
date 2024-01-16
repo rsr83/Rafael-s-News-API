@@ -4,6 +4,7 @@ const {
   getError,
   getApi,
   getArticlesById,
+  getArticles,
 } = require("./controllers/topics-controllers");
 const app = express();
 
@@ -12,6 +13,8 @@ app.get("/api/topics", getTopics);
 app.get("/api", getApi);
 
 app.get("/api/articles/:articles_id", getArticlesById);
+
+app.get("/api/articles", getArticles);
 
 app.all("*", getError);
 
