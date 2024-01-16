@@ -3,6 +3,7 @@ const {
   fetchApi,
   fetchArticleById,
   fetchArticles,
+  fetchCommentByArticleId,
 } = require("../models/topics-models");
 
 function getTopics(req, res) {
@@ -38,4 +39,22 @@ function getArticles(req, res, next) {
   });
 }
 
-module.exports = { getTopics, getError, getApi, getArticlesById, getArticles };
+function getCommentByArticleId(req, res, next) {
+  const articleIndex = req.params.article_id;
+  fetchCommentByArticleId(articleIndex)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
+module.exports = {
+  getTopics,
+  getError,
+  getApi,
+  getArticlesById,
+  getArticles,
+  getCommentByArticleId,
+};

@@ -38,4 +38,25 @@ function fetchArticles() {
     });
 }
 
-module.exports = { fetchTopics, fetchApi, fetchArticleById, fetchArticles };
+function fetchCommentByArticleId(articleIndex) {
+  return db
+    .query(
+      `SELECT * FROM comments 
+    WHERE article_id = $1 
+    ORDER BY created_at DESC;`,
+      [articleIndex]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      } else return result.rows;
+    });
+}
+
+module.exports = {
+  fetchTopics,
+  fetchApi,
+  fetchArticleById,
+  fetchArticles,
+  fetchCommentByArticleId,
+};
