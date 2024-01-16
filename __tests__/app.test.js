@@ -118,7 +118,7 @@ describe("/api/articles", () => {
 });
 
 describe("/api/articles/:articles_id", () => {
-  test("GET 200: receive all the comments from a especific article passed", () => {
+  test("GET 200: receive all the comments from a especific article passed sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles/3/comments")
       .expect(200)
