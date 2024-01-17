@@ -6,6 +6,7 @@ const {
   fetchCommentByArticleId,
   addCommentByArticleId,
   updateVotesByArticleId,
+  removeCommentById,
 } = require("../models/topics-models");
 
 function getTopics(req, res) {
@@ -43,10 +44,6 @@ function getArticles(req, res, next) {
 
 function getCommentByArticleId(req, res, next) {
   const articleIndex = req.params.article_id;
-
-  // need to change the code to check for articles
-  // without comments (now is comming as error 404)
-
   fetchCommentByArticleId(articleIndex)
     .then((comments) => {
       res.status(200).send({ comments });
@@ -81,6 +78,17 @@ function patchArticlesById(req, res, next) {
     });
 }
 
+function deleteCommentById(req, res, next) {
+  const commentId = req.params.comment_id;
+  removeCommentById(commentId)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getError,
@@ -90,4 +98,5 @@ module.exports = {
   getCommentByArticleId,
   postCommentByArticleId,
   patchArticlesById,
+  deleteCommentById,
 };

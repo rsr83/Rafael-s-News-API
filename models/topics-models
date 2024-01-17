@@ -77,7 +77,17 @@ function updateVotesByArticleId(articleId, incVotes) {
       } else return result.rows[0];
     });
 }
-//;
+
+function removeCommentById(commentId) {
+  return db
+    .query("DELETE FROM comments WHERE comment_id = $1;", [commentId])
+    .then((result) => {
+      console.log(result);
+      if (result.rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "Comment Not Found" });
+      }
+    });
+}
 
 module.exports = {
   fetchTopics,
@@ -87,17 +97,5 @@ module.exports = {
   fetchCommentByArticleId,
   addCommentByArticleId,
   updateVotesByArticleId,
+  removeCommentById,
 };
-
-/*
-Complete SELECT query
-SELECT DISTINCT column, AGG_FUNC(column_or_expression), …
-FROM mytable
-    JOIN another_table
-      ON mytable.column = another_table.column
-    WHERE constraint_expression
-    GROUP BY column
-    HAVING constraint_expression
-    ORDER BY column ASC/DESC
-    LIMIT count OFFSET COUNT;
-    */
