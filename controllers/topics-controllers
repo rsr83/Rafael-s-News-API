@@ -5,6 +5,7 @@ const {
   fetchArticles,
   fetchCommentByArticleId,
   addCommentByArticleId,
+  updateVotesByArticleId,
 } = require("../models/topics-models");
 
 function getTopics(req, res) {
@@ -24,7 +25,7 @@ function getApi(req, res, next) {
 }
 
 function getArticlesById(req, res, next) {
-  const articleIndex = req.params.articles_id;
+  const articleIndex = req.params.article_id;
   fetchArticleById(articleIndex)
     .then((article) => {
       res.status(200).send({ article });
@@ -68,6 +69,18 @@ function postCommentByArticleId(req, res, next) {
     });
 }
 
+function patchArticlesById(req, res, next) {
+  const articleId = req.params.article_id;
+  const incVotes = req.body.inc_votes;
+  updateVotesByArticleId(articleId, incVotes)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getError,
@@ -76,4 +89,5 @@ module.exports = {
   getArticles,
   getCommentByArticleId,
   postCommentByArticleId,
+  patchArticlesById,
 };

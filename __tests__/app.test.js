@@ -51,7 +51,7 @@ describe("/api", () => {
   });
 });
 
-describe("/api/articles/:articles_id", () => {
+describe("/api/articles/:article_id", () => {
   test("GET 200: receive a the article requested by their respective id", () => {
     return request(app)
       .get("/api/articles/1")
@@ -90,6 +90,73 @@ describe("/api/articles/:articles_id", () => {
       .then((response) => {
         expect(response.body.msg).toBe("Bad Request");
       });
+  });
+  describe("PATCH: update votes number in a given article_id", () => {
+    it("PATCH 200: increment by 1", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({
+          inc_votes: 1,
+        })
+        .expect(200)
+        .then((response) => {
+          expect(response.body.article.votes).toBe(101);
+          expect(response.body.article.article_id).toBe(1);
+          expect(response.body.article).toMatchObject({
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    it("PATCH 200: decrement by 100", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({
+          inc_votes: -100,
+        })
+        .expect(200)
+        .then((response) => {
+          expect(response.body.article.votes).toBe(0);
+          expect(response.body.article.article_id).toBe(1);
+        });
+    });
+    it("PATCH:404 sends an error message when given a valid but non-existent article_id", () => {
+      return request(app)
+        .patch("/api/articles/999")
+        .send({
+          inc_votes: 1,
+        })
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe("Article not found");
+        });
+    });
+    it("PATCH:400 sends an error message when given a invalid article_id", () => {
+      return request(app)
+        .patch("/api/articles/not_an_article")
+        .send({
+          inc_votes: 1,
+        })
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad Request");
+        });
+    });
+    it("PATCH:400 sends an error message when the patch is missing/have wrong data in its body", () => {
+      return request(app)
+        .patch("/api/articles/not_an_article")
+        .send({
+          banana: 1,
+        })
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad Request");
+        });
+    });
   });
 });
 
