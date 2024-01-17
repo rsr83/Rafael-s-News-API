@@ -117,7 +117,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe("/api/articles/:articles_id", () => {
+describe("/api/articles/:articles_id/comments", () => {
   test("GET 200: receive all the comments from a especific article passed sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles/3/comments")
@@ -153,6 +153,57 @@ describe("/api/articles/:articles_id", () => {
         expect(response.body.msg).toBe("Bad Request");
       });
   });
+  test("POST 201: add a comment in a especific article passed", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        username: "lurker",
+        body: "this is a test",
+      })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment).toMatchObject({
+          comment_id: 19,
+          body: "this is a test",
+          article_id: 3,
+          author: "lurker",
+          votes: 0,
+        });
+      });
+  });
+  test("POST:400 responds with an error message when missing information in the body ", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        body: "this is a test",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Post Missing Data");
+      });
+  });
+  test("POST:404 responds with an error message when trying to comment in a nonexistent article ", () => {
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send({
+        username: "lurker",
+        body: "this is a test",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Not Found");
+      });
+  });
+  test("POST:400 sresponds with an error message when trying to comment in an invalid article_id", () => {
+    return request(app)
+      .post("/api/articles/not_an_article/comments")
+      .send({
+        username: "lurker",
+        body: "this is a test",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request");
+      });
+  });
 });
-
-//api/articles/:article_id/comments
