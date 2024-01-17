@@ -65,6 +65,20 @@ function addCommentByArticleId(articleId, username, body) {
     });
 }
 
+function updateVotesByArticleId(articleId, incVotes) {
+  return db
+    .query(
+      `UPDATE articles SET votes=votes+$1 WHERE article_id = $2 RETURNING *`,
+      [incVotes, articleId]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      } else return result.rows[0];
+    });
+}
+//;
+
 module.exports = {
   fetchTopics,
   fetchApi,
@@ -72,4 +86,18 @@ module.exports = {
   fetchArticles,
   fetchCommentByArticleId,
   addCommentByArticleId,
+  updateVotesByArticleId,
 };
+
+/*
+Complete SELECT query
+SELECT DISTINCT column, AGG_FUNC(column_or_expression), …
+FROM mytable
+    JOIN another_table
+      ON mytable.column = another_table.column
+    WHERE constraint_expression
+    GROUP BY column
+    HAVING constraint_expression
+    ORDER BY column ASC/DESC
+    LIMIT count OFFSET COUNT;
+    */
