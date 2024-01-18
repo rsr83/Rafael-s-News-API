@@ -312,5 +312,3 @@ describe("/api/users", () => {
       });
   });
 });
-
-//add commit and merge task
