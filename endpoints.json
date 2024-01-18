@@ -9,19 +9,113 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET api/articles/:article_id": {
+    "description": "serves an array with the article selected",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        {
+          "author": "grumpy19",
+          "title": "The Notorious MSG's Unlikely Formula For Success",
+          "article_id": 34,
+          "topic": "cooking",
+          "created_at": "2020-11-22T11:13:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
+          "comment_count": "11"
+        }
+      ]
+    }
+  },
+  "PATCH api/articles/:article_id": {
+    "description": "update an article by article_id",
+    "queries": [],
+    "request body": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "topics": [
+        {
+          "author": "grumpy19",
+          "title": "The Notorious MSG's Unlikely Formula For Success",
+          "article_id": 34,
+          "topic": "cooking",
+          "created_at": "2020-11-22T11:13:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
+          "comment_count": "11"
+        }
+      ]
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["topic"],
     "exampleResponse": {
       "articles": [
         {
-          "title": "Seafood substitutions are increasing",
+          "author": "grumpy19",
+          "title": "The Notorious MSG's Unlikely Formula For Success",
+          "article_id": 34,
           "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
+          "created_at": "2020-11-22T11:13:00.000Z",
           "votes": 0,
-          "comment_count": 6
+          "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
+          "comment_count": "11"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of all comments to a given article",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        {
+          "comment_id": 89,
+          "body": "Esse et expedita harum non. Voluptatibus commodi voluptatem. Minima velit suscipit numquam ea. Id vitae debitis aut incidunt odio quo quam possimus ipsum.",
+          "article_id": 1,
+          "author": "cooljmessy",
+          "votes": 2,
+          "created_at": "2020-10-24T07:08:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "add comment to a given article",
+    "queries": [],
+    "request body": {
+      "username": "lurker",
+      "body": "this is a test"
+    },
+    "exampleResponse": {
+      "topics": [
+        {
+          "comment_id": 89,
+          "body": "Esse et expedita harum non. Voluptatibus commodi voluptatem. Minima velit suscipit numquam ea. Id vitae debitis aut incidunt odio quo quam possimus ipsum.",
+          "article_id": 1,
+          "author": "cooljmessy",
+          "votes": 2,
+          "created_at": "2020-10-24T07:08:00.000Z"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
         }
       ]
     }
