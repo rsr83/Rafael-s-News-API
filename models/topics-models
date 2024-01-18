@@ -1,6 +1,6 @@
 const db = require("../db/connection.js");
 const apiList = require("../endpoints.json");
-//const format = require("pg-format");
+const format = require("pg-format");
 
 function fetchTopics() {
   return db.query("SELECT * FROM topics;").then((result) => {
@@ -22,20 +22,22 @@ function fetchArticleById(articleIndex) {
     });
 }
 
-function fetchArticles() {
-  return db
-    .query(
-      `
+function fetchArticles(topicQuery) {
+  let queryString = `
   SELECT articles.author,title,articles.article_id,topic,articles.created_at,articles.votes,article_img_url, 
   COUNT(comments.body) AS comment_count 
   FROM articles 
-  LEFT JOIN comments ON articles.article_id=comments.article_id 
-  GROUP BY articles.article_id 
-  ORDER BY articles.created_at DESC`
-    )
-    .then((result) => {
-      return result.rows;
-    });
+  LEFT JOIN comments ON articles.article_id=comments.article_id`;
+  if (topicQuery) {
+    queryString += format(` WHERE topic=%L`, topicQuery);
+  }
+  queryString += ` GROUP BY articles.article_id 
+  ORDER BY articles.created_at DESC`;
+  return db.query(queryString).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Topic Not Found" });
+    } else return result.rows;
+  });
 }
 
 function fetchCommentByArticleId(articleIndex) {
@@ -82,7 +84,6 @@ function removeCommentById(commentId) {
   return db
     .query("DELETE FROM comments WHERE comment_id = $1;", [commentId])
     .then((result) => {
-      console.log(result);
       if (result.rowCount === 0) {
         return Promise.reject({ status: 404, msg: "Comment Not Found" });
       }
