@@ -182,6 +182,25 @@ describe("/api/articles", () => {
         });
       });
   });
+  test("GET 200: return articles filtered by topics", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(12);
+        response.body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("GET 404: return error message if the topic was not found", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Topic Not Found");
+      });
+  });
 });
 
 describe("/api/articles/:articles_id/comments", () => {
