@@ -185,7 +185,7 @@ describe("/api/articles", () => {
 });
 
 describe("/api/articles/:articles_id/comments", () => {
-  test("GET 200: receive all the comments from a especific article passed sorted by date in descending order", () => {
+  test("GET 200: receive all the comments from a specific article passed sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles/3/comments")
       .expect(200)
@@ -296,3 +296,21 @@ describe("/api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("/api/users", () => {
+  test("GET 200: return all the users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users.length).toBe(4);
+        response.body.users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
+  });
+});
+
+//add commit and merge task
