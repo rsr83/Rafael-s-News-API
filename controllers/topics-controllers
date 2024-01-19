@@ -8,6 +8,7 @@ const {
   updateVotesByArticleId,
   removeCommentById,
   fetchUsers,
+  checkArticleExists,
 } = require("../models/topics-models");
 
 function getTopics(req, res) {
@@ -49,9 +50,11 @@ function getArticles(req, res, next) {
 
 function getCommentByArticleId(req, res, next) {
   const articleIndex = req.params.article_id;
-  fetchCommentByArticleId(articleIndex)
+  const commentsArray = fetchCommentByArticleId(articleIndex);
+  const checkExistence = checkArticleExists(articleIndex);
+  Promise.all([commentsArray, checkExistence])
     .then((comments) => {
-      res.status(200).send({ comments });
+      res.status(200).send({ comments: comments[0] });
     })
     .catch((err) => {
       next(err);

@@ -57,9 +57,17 @@ function fetchCommentByArticleId(articleIndex) {
       [articleIndex]
     )
     .then((result) => {
+      return result.rows;
+    });
+}
+
+function checkArticleExists(articleIndex) {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [articleIndex])
+    .then((result) => {
       if (result.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Article not found" });
-      } else return result.rows;
+      }
     });
 }
 
@@ -114,4 +122,5 @@ module.exports = {
   updateVotesByArticleId,
   removeCommentById,
   fetchUsers,
+  checkArticleExists,
 };

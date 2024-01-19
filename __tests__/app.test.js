@@ -254,6 +254,14 @@ describe("/api/articles/:articles_id/comments", () => {
         expect(response.body.msg).toBe("Bad Request");
       });
   });
+  test("GET 200: receive an empty array when the article has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments.length).toBe(0);
+      });
+  });
   test("POST 201: add a comment in a especific article passed", () => {
     return request(app)
       .post("/api/articles/3/comments")
@@ -272,15 +280,16 @@ describe("/api/articles/:articles_id/comments", () => {
         });
       });
   });
-  test("POST:400 responds with an error message when missing information in the body ", () => {
+  test("POST:404 responds with an error if the username does not exists ", () => {
     return request(app)
       .post("/api/articles/3/comments")
       .send({
+        username: "banana",
         body: "this is a test",
       })
-      .expect(400)
+      .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Post Missing Data");
+        expect(response.body.msg).toBe("Not Found");
       });
   });
   test("POST:404 responds with an error message when trying to comment in a nonexistent article ", () => {
@@ -295,7 +304,19 @@ describe("/api/articles/:articles_id/comments", () => {
         expect(response.body.msg).toBe("Not Found");
       });
   });
-  test("POST:400 sresponds with an error message when trying to comment in an invalid article_id", () => {
+  test("POST:404 responds with an error message when trying to comment in a nonexistent article ", () => {
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send({
+        username: "lurker",
+        body: "this is a test",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Not Found");
+      });
+  });
+  test("POST:400 responds with an error message when trying to comment in an invalid article_id", () => {
     return request(app)
       .post("/api/articles/not_an_article/comments")
       .send({
