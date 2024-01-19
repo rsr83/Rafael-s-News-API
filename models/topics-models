@@ -30,7 +30,11 @@ function fetchArticleById(articleIndex) {
     });
 }
 
-function fetchArticles(topicQuery) {
+function fetchArticles(
+  topicQuery,
+  sortedBy = "articles.created_at",
+  orderBy = "DESC"
+) {
   let queryString = `
   SELECT articles.author,title,articles.article_id,topic,articles.created_at,articles.votes,article_img_url, 
   COUNT(comments.body) AS comment_count 
@@ -39,8 +43,7 @@ function fetchArticles(topicQuery) {
   if (topicQuery) {
     queryString += format(` WHERE topic=%L`, topicQuery);
   }
-  queryString += ` GROUP BY articles.article_id 
-  ORDER BY articles.created_at DESC`;
+  queryString += ` GROUP BY articles.article_id ORDER BY ${sortedBy} ${orderBy}`;
   return db.query(queryString).then((result) => {
     if (result.rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Topic Not Found" });

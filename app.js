@@ -32,13 +32,12 @@ app.get("/api/users", getUsers);
 
 app.all("*", getError);
 
+const errCodes = ["22P02", "42703", "42601", "23502"];
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
-  } else if (err.code === "22P02") {
+  } else if (errCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad Request" });
-  } else if (err.code === "23502") {
-    res.status(400).send({ msg: "Post Missing Data" });
   } else if (err.code === "23503") {
     res.status(404).send({ msg: "Not Found" });
   } else {
