@@ -197,6 +197,48 @@ describe("/api/articles", () => {
         });
       });
   });
+  test("GET 200: return all the articles sorted by article_id in descending order (default)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(13);
+        response.body.articles.forEach((article) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("string");
+        });
+        expect(response.body.articles).toBeSortedBy("article_id", {
+          descending: true,
+        });
+      });
+  });
+  test("GET 200: return all the articles sorted by author in ascending order (default)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order=ASC")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(13);
+        response.body.articles.forEach((article) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("string");
+        });
+        expect(response.body.articles).toBeSortedBy("author", {
+          descending: false,
+        });
+      });
+  });
   test("GET 200: return articles filtered by topics", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
@@ -206,6 +248,22 @@ describe("/api/articles", () => {
         response.body.articles.forEach((article) => {
           expect(article.topic).toBe("mitch");
         });
+      });
+  });
+  test("GET 400: return error message if sorted by an inexistent column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=banana")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request");
+      });
+  });
+  test("GET 400: return error message if orderd by anything but ASC or DESC", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order=banana")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request");
       });
   });
   test("GET 404: return error message if the topic was not found", () => {
@@ -292,16 +350,15 @@ describe("/api/articles/:articles_id/comments", () => {
         expect(response.body.msg).toBe("Not Found");
       });
   });
-  test("POST:404 responds with an error message when trying to comment in a nonexistent article ", () => {
+  test("POST:400 responds with an error message when missing data in the body passed ", () => {
     return request(app)
-      .post("/api/articles/999/comments")
+      .post("/api/articles/3/comments")
       .send({
-        username: "lurker",
         body: "this is a test",
       })
-      .expect(404)
+      .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Not Found");
+        expect(response.body.msg).toBe("Bad Request");
       });
   });
   test("POST:404 responds with an error message when trying to comment in a nonexistent article ", () => {
