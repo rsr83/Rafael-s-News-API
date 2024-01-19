@@ -276,7 +276,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe("/api/articles/:articles_id/comments", () => {
+describe("/api/articles/:article_id/comments", () => {
   test("GET 200: receive all the comments from a specific article passed sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles/3/comments")
