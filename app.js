@@ -3,6 +3,9 @@ const { getError } = require("./controllers/topics-controllers");
 const apiRouter = require("./Routes/api.router");
 const app = express();
 app.use(express.json());
+const cors = require("cors");
+
+app.use(cors());
 
 app.use("/api", apiRouter);
 
